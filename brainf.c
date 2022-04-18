@@ -121,45 +121,45 @@ void program_read(program *p, char *filename) {
       command_list *cl = p->program_commands;
 
       switch (c) {
-      case '>': {
-        cl->commands[cl->size++] = INC_PTR;
-        break;
-      }
+        case '>': {
+          cl->commands[cl->size++] = INC_PTR;
+          break;
+        }
 
-      case '<': {
-        cl->commands[cl->size++] = DEC_PTR;
-        break;
-      }
+        case '<': {
+          cl->commands[cl->size++] = DEC_PTR;
+          break;
+        }
 
-      case '+': {
-        cl->commands[cl->size++] = INC_BYTE;
-        break;
-      }
+        case '+': {
+          cl->commands[cl->size++] = INC_BYTE;
+          break;
+        }
 
-      case '-': {
-        cl->commands[cl->size++] = DEC_BYTE;
-        break;
-      }
+        case '-': {
+          cl->commands[cl->size++] = DEC_BYTE;
+          break;
+        }
 
-      case '.': {
-        cl->commands[cl->size++] = OUT_BYTE;
-        break;
-      }
+        case '.': {
+          cl->commands[cl->size++] = OUT_BYTE;
+          break;
+        }
 
-      case ',': {
-        cl->commands[cl->size++] = IN_BYTE;
-        break;
-      }
+        case ',': {
+          cl->commands[cl->size++] = IN_BYTE;
+          break;
+        }
 
-      case '[': {
-        cl->commands[cl->size++] = START_LOOP;
-        break;
-      }
+        case '[': {
+          cl->commands[cl->size++] = START_LOOP;
+          break;
+        }
 
-      case ']': {
-        cl->commands[cl->size++] = END_LOOP;
-        break;
-      }
+        case ']': {
+          cl->commands[cl->size++] = END_LOOP;
+          break;
+        }
       }
 
       if (cl->size >= cl->capacity) {
@@ -218,62 +218,62 @@ void program_run(program *p) {
     command current = p->program_commands->commands[p->program_counter];
 
     switch (current) {
-    case INC_PTR: {
-      p->mem_ptr++;
-      break;
-    }
-
-    case DEC_PTR: {
-      p->mem_ptr--;
-      break;
-    }
-
-    case INC_BYTE: {
-      p->memory[p->mem_ptr]++;
-      break;
-    }
-
-    case DEC_BYTE: {
-      p->memory[p->mem_ptr]--;
-      break;
-    }
-
-    case OUT_BYTE: {
-      putchar(p->memory[p->mem_ptr]);
-      break;
-    }
-
-    case IN_BYTE: {
-      p->memory[p->mem_ptr] = getchar();
-      break;
-    }
-
-    case START_LOOP: {
-      if (!stack_push(p->program_stack, p->program_counter)) {
-        program_free(p);
-        puts("Stack error: Overflow");
-        exit(1);
-      }
-      break;
-    }
-
-    case END_LOOP: {
-      if (p->program_stack->size == 0) {
-        program_free(p);
-        puts("Stack error: Underflow");
-        exit(1);
+      case INC_PTR: {
+        p->mem_ptr++;
+        break;
       }
 
-      if (p->memory[p->mem_ptr]) {
-        stack *s = p->program_stack;
-        p->program_counter = s->elements[s->size - 1];
-      } else {
-        stack *s = p->program_stack;
-        s->size--;
+      case DEC_PTR: {
+        p->mem_ptr--;
+        break;
       }
 
-      break;
-    }
+      case INC_BYTE: {
+        p->memory[p->mem_ptr]++;
+        break;
+      }
+
+      case DEC_BYTE: {
+        p->memory[p->mem_ptr]--;
+        break;
+      }
+
+      case OUT_BYTE: {
+        putchar(p->memory[p->mem_ptr]);
+        break;
+      }
+
+      case IN_BYTE: {
+        p->memory[p->mem_ptr] = getchar();
+        break;
+      }
+
+      case START_LOOP: {
+        if (!stack_push(p->program_stack, p->program_counter)) {
+          program_free(p);
+          puts("Stack error: Overflow");
+          exit(1);
+        }
+        break;
+      }
+
+      case END_LOOP: {
+        if (p->program_stack->size == 0) {
+          program_free(p);
+          puts("Stack error: Underflow");
+          exit(1);
+        }
+
+        if (p->memory[p->mem_ptr]) {
+          stack *s = p->program_stack;
+          p->program_counter = s->elements[s->size - 1];
+        } else {
+          stack *s = p->program_stack;
+          s->size--;
+        }
+
+        break;
+      }
     }
 
     p->program_counter++;
