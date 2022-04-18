@@ -5,6 +5,7 @@
 #endif
 
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -16,16 +17,16 @@
 #define MEM_LEN 30000
 #define INIT_CAPACITY 1024
 
-typedef enum {
-  INC_PTR,
-  DEC_PTR,
-  INC_BYTE,
-  DEC_BYTE,
-  OUT_BYTE,
-  IN_BYTE,
-  START_LOOP,
-  END_LOOP
-} command;
+typedef uint8_t command;
+
+static const command INC_PTR = 0;
+static const command DEC_PTR = 1;
+static const command INC_BYTE = 2;
+static const command DEC_BYTE = 3;
+static const command OUT_BYTE = 4;
+static const command IN_BYTE = 5;
+static const command START_LOOP = 6;
+static const command END_LOOP = 7;
 
 typedef struct {
   size_t capacity;
