@@ -249,11 +249,41 @@ void program_run(program *p) {
       }
 
       case START_LOOP: {
+        // Skip the loop if current memory value is 0
+        if (p->memory[p->mem_ptr] == 0) {
+          int next_command = p->program_counter + 1;
+          bool match_found = false;
+          int match_count = 0;
+
+          while (!match_found) {
+            command checking = p->program_commands->commands[next_command];
+
+            if (checking == START_LOOP) {
+              match_count++;
+            }
+
+            if (checking == END_LOOP) {
+              if (match_count == 0) {
+                match_found = true;
+                break;
+              }
+
+              match_count--;
+            }
+
+            next_command++;
+          }
+
+          p->program_counter = next_command;
+          break;
+        }
+
         if (!stack_push(p->program_stack, p->program_counter)) {
           program_free(p);
           puts("Stack error: Overflow");
           exit(1);
         }
+
         break;
       }
 
