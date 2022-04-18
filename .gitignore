@@ -2,3 +2,5 @@ brainf
 *.bf
 *.txt
 !hello_world.bf
+test/*
+test
