@@ -19,3 +19,7 @@ into the terminal. The Makefile assumes that gcc is pre-installed on the system.
 ```
 
 should output `Hello World!` onto the terminal.
+
+## Credits
+
+The pre-provided `hello_world.bf` file is taken from [Wikipedia](https://en.wikipedia.org/wiki/Brainfuck).
