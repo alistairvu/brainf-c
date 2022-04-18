@@ -28,6 +28,17 @@ static const command IN_BYTE = 5;
 static const command START_LOOP = 6;
 static const command END_LOOP = 7;
 
+/* typedef enum command {
+  INC_PTR,
+  DEC_PTR,
+  INC_BYTE,
+  DEC_BYTE,
+  OUT_BYTE,
+  IN_BYTE,
+  START_LOOP,
+  END_LOOP
+} command; */
+
 typedef struct {
   size_t capacity;
   size_t size;
