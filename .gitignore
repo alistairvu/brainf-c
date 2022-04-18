@@ -1,6 +1,4 @@
 brainf
-invalid_1.bf
-invalid_2.bf
-hello.txt
-rot13.bf
-test_1.bf
+*.bf
+*.txt
+!hello_world.bf
