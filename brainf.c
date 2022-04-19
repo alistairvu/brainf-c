@@ -31,41 +31,96 @@ void command_list_free(command_list *list) {
 
 // ANCHOR: Create a new stack
 stack *stack_new(void) {
-  int *elements = (int *)malloc(sizeof(int) * STACK_LEN);
-
-  if (elements == NULL) {
-    puts("Memory error: Cannot allocate memory for command list");
-    exit(1);
-  }
-
-  stack *s = (stack *)malloc(sizeof(stack));
+  stack *s = malloc(sizeof(stack));
 
   if (s == NULL) {
-    puts("Memory error: Cannot allocate memory for command list");
+    puts("Memory error: Cannot allocate memory for program stack");
     exit(1);
   }
 
-  s->elements = elements;
+  s->head = NULL;
+  s->tail = NULL;
   s->size = 0;
 
   return s;
 };
 
+// ANCHOR: Create a new stack node
+stack_node *stack_node_new(int val) {
+  stack_node *node = malloc(sizeof(stack_node));
+
+  if (node == NULL) {
+    puts("Memory error: Cannot allocate memory for program stack node");
+    exit(1);
+  }
+
+  node->val = val;
+  node->next = NULL;
+  node->prev = NULL;
+  return node;
+};
+
 // ANCHOR: Free stack
 void stack_free(stack *s) {
-  free(s->elements);
+  stack_node *curr = s->head;
+  stack_node *next = NULL;
+
+  while (curr != NULL) {
+    next = curr->next;
+    free(curr);
+    curr = next;
+  }
+
   free(s);
 };
 
 // ANCHOR: Push element on top of the stack
 bool stack_push(stack *s, int elem) {
-  if (s->size >= STACK_LEN) {
-    return false;
+  stack_node *n = stack_node_new(elem);
+
+  stack_node *prev_head = s->head;
+  n->next = prev_head;
+  s->head = n;
+
+  if (s->size == 0) {
+    s->tail = n;
   }
 
-  s->elements[s->size++] = elem;
+  s->size++;
+
   return true;
 };
+
+// ANCHOR: Peek element on top of the stack
+int stack_peek(stack *s) {
+  if (s->size == 0) {
+    puts("Stack error: Cannot peek empty stack.");
+    exit(1);
+  }
+
+  return s->head->val;
+}
+
+// ANCHOR: Pop from the stack
+int stack_pop(stack *s) {
+  if (s->size == 0) {
+    puts("Stack error: Cannot pop from empty stack.");
+    exit(1);
+  }
+
+  stack_node *prev_head = s->head;
+  int result = s->head->val;
+  s->head = s->head->next;
+
+  if (s->head == NULL) {
+    s->tail = NULL;
+  }
+
+  s->size--;
+
+  free(prev_head);
+  return result;
+}
 
 // ANCHOR: Create a new program
 program *program_new(void) {
@@ -296,10 +351,10 @@ void program_run(program *p) {
 
       if (p->memory[p->mem_ptr]) {
         stack *s = p->program_stack;
-        p->program_counter = s->elements[s->size - 1];
+        p->program_counter = stack_peek(s);
       } else {
         stack *s = p->program_stack;
-        s->size--;
+        stack_pop(s);
       }
 
       break;

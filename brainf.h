@@ -13,22 +13,10 @@
 #include <unistd.h>
 
 #define BUF_LEN 2048
-#define STACK_LEN 128
 #define MEM_LEN 30000
 #define INIT_CAPACITY 1024
 
-typedef uint8_t command;
-
-static const command INC_PTR = 0;
-static const command DEC_PTR = 1;
-static const command INC_BYTE = 2;
-static const command DEC_BYTE = 3;
-static const command OUT_BYTE = 4;
-static const command IN_BYTE = 5;
-static const command START_LOOP = 6;
-static const command END_LOOP = 7;
-
-/* typedef enum command {
+typedef enum command {
   INC_PTR,
   DEC_PTR,
   INC_BYTE,
@@ -37,7 +25,7 @@ static const command END_LOOP = 7;
   IN_BYTE,
   START_LOOP,
   END_LOOP
-} command; */
+} command;
 
 typedef struct {
   size_t capacity;
@@ -45,9 +33,16 @@ typedef struct {
   command *commands;
 } command_list;
 
+typedef struct stack_node {
+  int val;
+  struct stack_node *prev;
+  struct stack_node *next;
+} stack_node;
+
 typedef struct {
   size_t size;
-  int *elements;
+  stack_node *head;
+  stack_node *tail;
 } stack;
 
 typedef struct {
@@ -63,8 +58,11 @@ command_list *command_list_new(void);
 void command_list_free(command_list *list);
 
 stack *stack_new(void);
+stack_node *stack_node_new(int val);
 void stack_free(stack *s);
 bool stack_push(stack *s, int elem);
+int stack_peek(stack *s);
+int stack_pop(stack *s);
 
 program *program_new(void);
 void program_free(program *p);
